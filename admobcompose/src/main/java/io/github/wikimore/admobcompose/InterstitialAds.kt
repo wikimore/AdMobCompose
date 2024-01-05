@@ -106,7 +106,34 @@ class InterstitialAdState(
             })
     }
 
-    fun show() = mInterstitialAd?.show(activity)
+    fun show(onAdClose: () -> Unit) {
+        mInterstitialAd?.fullScreenContentCallback =
+            object : FullScreenContentCallback() {
+                override fun onAdClicked() {
+                    onAdClicked.invoke()
+                }
 
-    fun refresh(adUnitId: String? = null) = load(adUnitId = adUnitId ?: this.adUnitId)
+                override fun onAdDismissedFullScreenContent() {
+                    onAdDismissedFullScreenContent.invoke()
+                    onAdClose()
+                }
+
+                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                    onAdFailedToShowFullScreenContent.invoke(adError)
+                }
+
+                override fun onAdImpression() {
+                    onAdImpression.invoke()
+                }
+
+                override fun onAdShowedFullScreenContent() {
+                    onAdShowedFullScreenContent.invoke()
+                }
+            }
+        mInterstitialAd?.show(activity)
+    }
+
+    fun refresh(adUnitId: String? = null) {
+        load(adUnitId = adUnitId ?: this.adUnitId)
+    }
 }
