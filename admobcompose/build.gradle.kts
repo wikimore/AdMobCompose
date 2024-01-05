@@ -1,5 +1,6 @@
 import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.com.vanniktech.maven.publish)
@@ -20,11 +21,12 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            consumerProguardFiles("consumer-rules.pro")
         }
     }
     buildFeatures {
@@ -62,10 +64,7 @@ dependencies {
 }
 
 mavenPublishing {
-    ext {
-
-    }
-    coordinates("io.github.wikimore", "admob-compose", "0.0.1")
+    coordinates("io.github.wikimore", "admob-compose", "0.0.3")
     pom {
         name.set("AdMobCompose")
         description.set("A library for using AdMob in android jetpack compose.")
@@ -107,5 +106,5 @@ mavenPublishing {
         )
     )
     signAllPublications()
-    publishToMavenCentral(SonatypeHost.S01)
+    publishToMavenCentral(SonatypeHost.S01, true)
 }

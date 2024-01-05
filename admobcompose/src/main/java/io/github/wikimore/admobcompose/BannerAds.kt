@@ -13,7 +13,7 @@ import com.google.android.gms.ads.LoadAdError
 @Composable
 fun BannerAd(
     adUnitId: String,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     adSize: AdSize = AdSize.BANNER,
     onAdLoaded: () -> Unit = {},
     onAdFailedToLoad: (adLoadError: LoadAdError) -> Unit = {},

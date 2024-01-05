@@ -23,21 +23,25 @@ fun rememberInterstitialAdState(
     onAdDismissedFullScreenContent: () -> Unit = { },
     onAdFailedToShowFullScreenContent: (adError: AdError) -> Unit = { },
     onPaid: (adValue: AdValue) -> Unit = { }
-) = LocalContext.current.getActivity()?.let {
-    remember(adUnitId) {
-        InterstitialAdState(
-            activity = it,
-            adUnitId = adUnitId,
-            onAdLoadFailed = onAdLoadFailed,
-            onAdLoaded = onAdLoaded,
-            onAdClicked = onAdClicked,
-            onAdImpression = onAdImpression,
-            onAdShowedFullScreenContent = onAdShowedFullScreenContent,
-            onAdDismissedFullScreenContent = onAdDismissedFullScreenContent,
-            onAdFailedToShowFullScreenContent = onAdFailedToShowFullScreenContent,
-            onPaid = onPaid,
-        )
+): InterstitialAdState? {
+    val context = LocalContext.current
+    context.getActivity()?.let {
+        return remember(adUnitId) {
+            InterstitialAdState(
+                activity = it,
+                adUnitId = adUnitId,
+                onAdLoadFailed = onAdLoadFailed,
+                onAdLoaded = onAdLoaded,
+                onAdClicked = onAdClicked,
+                onAdImpression = onAdImpression,
+                onAdShowedFullScreenContent = onAdShowedFullScreenContent,
+                onAdDismissedFullScreenContent = onAdDismissedFullScreenContent,
+                onAdFailedToShowFullScreenContent = onAdFailedToShowFullScreenContent,
+                onPaid = onPaid,
+            )
+        }
     }
+    return null
 }
 
 class InterstitialAdState(
