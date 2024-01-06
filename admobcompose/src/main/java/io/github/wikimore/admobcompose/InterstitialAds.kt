@@ -9,6 +9,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdValue
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
@@ -106,28 +107,58 @@ class InterstitialAdState(
             })
     }
 
-    fun show(onAdClose: () -> Unit) {
+    fun show() {
+        mInterstitialAd?.show(activity)
+    }
+
+    fun show(fullScreenContentCallback: FullScreenContentCallback) {
+        mInterstitialAd?.fullScreenContentCallback = fullScreenContentCallback
+        mInterstitialAd?.show(activity)
+    }
+
+    fun show(
+        fullScreenContentCallback: FullScreenContentCallback,
+        onPaidEventListener: OnPaidEventListener
+    ) {
+        mInterstitialAd?.fullScreenContentCallback = fullScreenContentCallback
+        mInterstitialAd?.onPaidEventListener = onPaidEventListener
+        mInterstitialAd?.show(activity)
+    }
+
+    fun show(
+        onAdShowed: (() -> Unit)? = null,
+        onAdImpression: (() -> Unit)? = null,
+        onAdClosed: (() -> Unit)? = null,
+        onAdClicked: (() -> Unit)? = null
+    ) {
         mInterstitialAd?.fullScreenContentCallback =
             object : FullScreenContentCallback() {
                 override fun onAdClicked() {
-                    onAdClicked.invoke()
+                    onAdClicked?.invoke()?.let {
+                        this@InterstitialAdState.onAdClicked.invoke()
+                    }
                 }
 
                 override fun onAdDismissedFullScreenContent() {
-                    onAdDismissedFullScreenContent.invoke()
-                    onAdClose()
+                    onAdClosed?.invoke()?.let {
+                        this@InterstitialAdState.onAdDismissedFullScreenContent.invoke()
+                    }
                 }
 
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                    onAdFailedToShowFullScreenContent.invoke(adError)
+                    this@InterstitialAdState.onAdFailedToShowFullScreenContent.invoke(adError)
                 }
 
                 override fun onAdImpression() {
-                    onAdImpression.invoke()
+                    onAdImpression?.invoke()?.let {
+                        this@InterstitialAdState.onAdImpression.invoke()
+                    }
                 }
 
                 override fun onAdShowedFullScreenContent() {
-                    onAdShowedFullScreenContent.invoke()
+                    onAdShowed?.invoke()?.let {
+                        this@InterstitialAdState.onAdShowedFullScreenContent.invoke()
+                    }
                 }
             }
         mInterstitialAd?.show(activity)

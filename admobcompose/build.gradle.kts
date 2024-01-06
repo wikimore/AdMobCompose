@@ -64,7 +64,7 @@ dependencies {
 }
 
 mavenPublishing {
-    coordinates("io.github.wikimore", "admob-compose", "0.0.4")
+    coordinates("io.github.wikimore", "admob-compose", "0.0.5")
     pom {
         name.set("AdMobCompose")
         description.set("A library for using AdMob in android jetpack compose.")
